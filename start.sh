@@ -5,15 +5,24 @@ set -eu
 EXPECTED_SHA="2cabb1ea98ff4345541eec87c87ca854293f04eb3a1909f42528770fa764fa65"
 
 rm -rf /app/*
-: > /tmp/tks-runtime.tar.xz.enc
-for part in \
-  /opt/tks/runtime.part1.b64 \
-  /opt/tks/runtime.part2.b64 \
-  /opt/tks/runtime.part3.b64 \
-  /opt/tks/runtime.part4.b64
-do
-  tr -cd 'A-Za-z0-9+/=' < "$part" | base64 -d >> /tmp/tks-runtime.tar.xz.enc
-done
+node <<'NODE'
+const fs = require('fs');
+const files = [
+  '/opt/tks/runtime.part1.b64',
+  '/opt/tks/runtime.part2.b64',
+  '/opt/tks/runtime.part3.b64',
+  '/opt/tks/runtime.part4.b64',
+];
+const chunks = files.map((file) => {
+  const text = fs.readFileSync(file, 'utf8').replace(/[^A-Za-z0-9+/=]/g, '');
+  const decoded = Buffer.from(text, 'base64');
+  console.log(`[carrier] ${file} base64=${text.length} decoded=${decoded.length}`);
+  return decoded;
+});
+const payload = Buffer.concat(chunks);
+fs.writeFileSync('/tmp/tks-runtime.tar.xz.enc', payload);
+console.log(`[carrier] encrypted-bytes=${payload.length}`);
+NODE
 
 openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 \
   -in /tmp/tks-runtime.tar.xz.enc \
