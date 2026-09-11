@@ -1,11 +1,11 @@
 FROM node:22-bookworm-slim
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends openssl unzip gosu ca-certificates \
+ && apt-get install -y --no-install-recommends openssl xz-utils gosu ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/tks
-COPY runtime.zip.enc /opt/tks/runtime.zip.enc
+COPY runtime.part1.b64 runtime.part2.b64 runtime.part3.b64 runtime.part4.b64 /opt/tks/
 COPY start.sh /opt/tks/start.sh
 RUN chmod 0555 /opt/tks/start.sh \
  && mkdir -p /app /data/runs /data/automations /data/state
