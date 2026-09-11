@@ -6,6 +6,7 @@ RUN apt-get update \
 
 WORKDIR /opt/tks
 COPY runtime.part1.b64 runtime.part2.b64 runtime.part3.b64 runtime.part4.b64 /opt/tks/
+COPY reconstruct.mjs /opt/tks/reconstruct.mjs
 COPY start.sh /opt/tks/start.sh
 RUN chmod 0555 /opt/tks/start.sh \
  && mkdir -p /app /data/runs /data/automations /data/state
