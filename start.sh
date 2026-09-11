@@ -2,7 +2,7 @@
 set -eu
 
 : "${TKS_RUNTIME_BUNDLE_KEY:?TKS_RUNTIME_BUNDLE_KEY is required}"
-EXPECTED_SHA="fb4d1fca1a0431351b0b0aab401e891fd5e34a9bf1a2d7c2e7e1cc2685f1f28d"
+EXPECTED_SHA="2cabb1ea98ff4345541eec87c87ca854293f04eb3a1909f42528770fa764fa65"
 
 rm -rf /app/*
 cat /opt/tks/runtime.part1.b64 /opt/tks/runtime.part2.b64 /opt/tks/runtime.part3.b64 /opt/tks/runtime.part4.b64 \
